@@ -53,11 +53,6 @@
       cursor: pointer;
     }
 
-    #customInput {
-      display: none;
-      margin-top: 10px;
-    }
-
     .btn {
       padding: 10px;
       margin-top: 10px;
@@ -102,10 +97,6 @@
       margin-right: 5px;
     }
 
-    .activity-dropdown {
-      margin-bottom: 10px;
-    }
-
     .btn-outline-primary {
       background-color: lightblue;
     }
@@ -115,10 +106,6 @@
       cursor: pointer;
       margin-left: 10px;
       font-weight: bold;
-    }
-
-    .activity-dropdown {
-      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -133,52 +120,80 @@
       <input type="text" id="device-id" class="form-control" placeholder="Device ID" />
     </div>
 
-    <div class="mb-3">
-      <h5>Timing</h5>
-      <div class="button-group d-flex">
-        <button class="btn btn-primary" id="now-button">NOW</button>
-        <button class="btn btn-outline-primary" id="custom-button">Custom</button>
+    <!-- Timing Modal -->
+    <button class="btn btn-primary" id="timing-button">Timing</button>
+    <div class="modal" id="timing-modal">
+      <div class="modal-content">
+        <span class="close" id="close-timing-modal">&times;</span>
+        <h5>Timing</h5>
+        <div class="button-group d-flex">
+          <button class="btn btn-primary" id="now-button">NOW</button>
+          <button class="btn btn-outline-primary" id="custom-button">Custom</button>
+        </div>
+        <input type="datetime-local" id="custom-time" class="form-control mt-2 d-none" />
+        <div class="button-group d-flex mt-3">
+          <button class="btn btn-success" id="save-timing">SAVE CHANGES</button>
+          <button class="btn btn-danger" id="cancel-timing">CANCEL</button>
+        </div>
       </div>
-      <input type="datetime-local" id="custom-time" class="form-control mt-2 d-none" />
-      <button class="btn btn-success mt-2 d-none" id="custom-ok-button">OK</button>
-      <button class="btn btn-danger mt-2 d-none" id="custom-cancel-button">Cancel</button>
     </div>
 
-    <div class="mb-3">
-      <h5>Condition</h5>
-      <div class="button-group d-flex">
-        <button class="btn btn-outline-primary" id="add-condition">+ Add Condition</button>
-        <button class="btn btn-success" id="ok-condition">OK</button>
-        <button class="btn btn-danger" id="cancel-condition">CANCEL</button>
+    <!-- Condition Modal -->
+    <button class="btn btn-primary" id="condition-button">Condition</button>
+    <div class="modal" id="condition-modal">
+      <div class="modal-content">
+        <span class="close" id="close-condition-modal">&times;</span>
+        <h5>Condition</h5>
+        <div class="button-group d-flex">
+          <button class="btn btn-outline-primary" id="add-condition">+ Add Condition</button>
+        </div>
+        <div class="container" id="condition-container"></div>
+        <div class="button-group d-flex mt-3">
+          <button class="btn btn-success" id="save-condition">SAVE CHANGES</button>
+          <button class="btn btn-danger" id="cancel-condition">CANCEL</button>
+        </div>
       </div>
-      <div class="container" id="condition-container"></div>
     </div>
 
-    <div class="mb-3">
-      <h5>Activity</h5>
-      <div class="activity-group" id="activity-group">
-        <div class="activity-dropdown d-flex">
-          <select class="form-select activity-select me-2" id="activity-select">
-            <option>Select ONE</option>
-            <option>Smoking Cigarette</option>
-            <option>Running</option>
-            <option>Reading</option>
-            <option>Talking</option>
-          </select>
-          <button class="btn btn-success me-2" id="ok-activity">OK</button>
+    <!-- Activity Modal -->
+    <button class="btn btn-primary" id="activity-button">Activity</button>
+    <div class="modal" id="activity-modal">
+      <div class="modal-content">
+        <span class="close" id="close-activity-modal">&times;</span>
+        <h5>Activity</h5>
+        <div class="activity-group" id="activity-group">
+          <div class="activity-dropdown d-flex">
+            <select class="form-select activity-select me-2" id="activity-select">
+              <option>Select ONE</option>
+              <option>Smoking Cigarette</option>
+              <option>Running</option>
+              <option>Reading</option>
+              <option>Talking</option>
+            </select>
+            <button class="btn btn-success me-2" id="ok-activity">OK</button>
+            <button class="btn btn-danger" id="cancel-activity">CANCEL</button>
+          </div>
+        </div>
+        <button class="btn btn-outline-primary mt-2" id="add-activity">+ Add Parallel Activity</button>
+        <div class="button-group d-flex mt-3">
+          <button class="btn btn-success" id="save-activity">SAVE CHANGES</button>
           <button class="btn btn-danger" id="cancel-activity">CANCEL</button>
         </div>
       </div>
-      <button class="btn btn-outline-primary mt-2" id="add-activity">+ Add Parallel Activity</button>
     </div>
 
-    <div class="mb-3">
-      <h5>Other Factors</h5>
-      <div class="other-factors" id="other-factors"></div>
-      <button class="btn btn-outline-primary" id="add-factor">+ Add Factor</button>
-      <div class="button-group d-flex mt-3">
-        <button class="btn btn-success" id="save-factors">SAVE CHANGES</button>
-        <button class="btn btn-danger" id="cancel-factors">CANCEL</button>
+    <!-- Other Factors Modal -->
+    <button class="btn btn-primary" id="factor-button">Other Factors</button>
+    <div class="modal" id="factor-modal">
+      <div class="modal-content">
+        <span class="close" id="close-factor-modal">&times;</span>
+        <h5>Other Factors</h5>
+        <div class="other-factors" id="other-factors"></div>
+        <button class="btn btn-outline-primary" id="add-factor">+ Add Factor</button>
+        <div class="button-group d-flex mt-3">
+          <button class="btn btn-success" id="save-factors">SAVE CHANGES</button>
+          <button class="btn btn-danger" id="cancel-factors">CANCEL</button>
+        </div>
       </div>
     </div>
 
@@ -197,14 +212,11 @@
       const nameInput = document.getElementById("name");
       const deviceInput = document.getElementById("device-id");
       const deviceContainer = document.getElementById("device-pill-container");
-      const addConditionButton = document.getElementById("add-condition");
-      const okConditionButton = document.getElementById("ok-condition");
-      const cancelConditionButton = document.getElementById("cancel-condition");
-      const activityGroup = document.getElementById("activity-group");
-      const addActivityButton = document.getElementById("add-activity");
-      const otherFactorsDiv = document.getElementById("other-factors");
-      const saveButton = document.getElementById("save");
-      const clearButton = document.getElementById("clear");
+
+      const timingModal = document.getElementById("timing-modal");
+      const conditionModal = document.getElementById("condition-modal");
+      const activityModal = document.getElementById("activity-modal");
+      const factorModal = document.getElementById("factor-modal");
 
       const nowButton = document.getElementById("now-button");
       const customButton = document.getElementById("custom-button");
@@ -237,7 +249,15 @@
         });
       }
 
-      // Handle Timestamp Logic
+      // Timing Modal Logic
+      document.getElementById("timing-button").addEventListener("click", () => {
+        timingModal.style.display = "block";
+      });
+
+      document.getElementById("close-timing-modal").addEventListener("click", () => {
+        timingModal.style.display = "none";
+      });
+
       nowButton.addEventListener("click", () => {
         timestamp = new Date().toISOString();
         customButton.classList.remove("active");
@@ -256,8 +276,24 @@
         timestamp = new Date(event.target.value).toISOString();
       });
 
-      // Handle Condition Logic
-      addConditionButton.addEventListener("click", () => {
+      document.getElementById("save-timing").addEventListener("click", () => {
+        timingModal.style.display = "none";
+      });
+
+      document.getElementById("cancel-timing").addEventListener("click", () => {
+        timingModal.style.display = "none";
+      });
+
+      // Condition Modal Logic
+      document.getElementById("condition-button").addEventListener("click", () => {
+        conditionModal.style.display = "block";
+      });
+
+      document.getElementById("close-condition-modal").addEventListener("click", () => {
+        conditionModal.style.display = "none";
+      });
+
+      document.getElementById("add-condition").addEventListener("click", () => {
         const conditionDiv = document.createElement("div");
         conditionDiv.classList.add("condition-item", "d-flex", "mb-2");
         conditionDiv.innerHTML = `
@@ -276,7 +312,7 @@
         });
       });
 
-      okConditionButton.addEventListener("click", () => {
+      document.getElementById("save-condition").addEventListener("click", () => {
         const selectedConditions = [];
         const conditionSelects = document.querySelectorAll(".condition-item select");
         conditionSelects.forEach(select => {
@@ -286,11 +322,11 @@
         });
         conditions = selectedConditions;
         updateConditions();
+        conditionModal.style.display = "none";
       });
 
-      cancelConditionButton.addEventListener("click", () => {
-        conditions = [];
-        updateConditions();
+      document.getElementById("cancel-condition").addEventListener("click", () => {
+        conditionModal.style.display = "none";
       });
 
       function updateConditions() {
@@ -304,8 +340,16 @@
         });
       }
 
-      // Handle Activity Logic
-      addActivityButton.addEventListener("click", () => {
+      // Activity Modal Logic
+      document.getElementById("activity-button").addEventListener("click", () => {
+        activityModal.style.display = "block";
+      });
+
+      document.getElementById("close-activity-modal").addEventListener("click", () => {
+        activityModal.style.display = "none";
+      });
+
+      document.getElementById("add-activity").addEventListener("click", () => {
         const activityDiv = document.createElement("div");
         activityDiv.classList.add("activity-item", "d-flex", "mb-2");
 
@@ -313,9 +357,10 @@
         select.classList.add("form-select", "me-2");
         select.innerHTML = `
           <option>Select ONE</option>
-          <option>AC</option>
-          <option>FAN</option>
-          <option>WINDOW</option>
+          <option>Smoking Cigarette</option>
+          <option>Running</option>
+          <option>Reading</option>
+          <option>Talking</option>
         `;
 
         const okButton = document.createElement("button");
@@ -329,7 +374,7 @@
         activityDiv.appendChild(select);
         activityDiv.appendChild(okButton);
         activityDiv.appendChild(cancelButton);
-        activityGroup.appendChild(activityDiv);
+        document.getElementById("activity-group").appendChild(activityDiv);
 
         okButton.addEventListener("click", () => {
           activities.push(select.value);
@@ -339,6 +384,14 @@
         cancelButton.addEventListener("click", () => {
           activityDiv.remove();
         });
+      });
+
+      document.getElementById("save-activity").addEventListener("click", () => {
+        activityModal.style.display = "none";
+      });
+
+      document.getElementById("cancel-activity").addEventListener("click", () => {
+        activityModal.style.display = "none";
       });
 
       function updateActivities() {
@@ -352,7 +405,15 @@
         });
       }
 
-      // Handle Factor Logic
+      // Other Factors Modal Logic
+      document.getElementById("factor-button").addEventListener("click", () => {
+        factorModal.style.display = "block";
+      });
+
+      document.getElementById("close-factor-modal").addEventListener("click", () => {
+        factorModal.style.display = "none";
+      });
+
       document.getElementById("add-factor").addEventListener("click", () => {
         const factorDiv = document.createElement("div");
         factorDiv.classList.add("factor-item", "d-flex", "mb-2");
@@ -377,7 +438,7 @@
         factorDiv.appendChild(keySelect);
         factorDiv.appendChild(valueInput);
         factorDiv.appendChild(crossIcon);
-        otherFactorsDiv.appendChild(factorDiv);
+        document.getElementById("other-factors").appendChild(factorDiv);
 
         crossIcon.addEventListener("click", () => {
           factorDiv.remove();
@@ -385,7 +446,6 @@
       });
 
       document.getElementById("save-factors").addEventListener("click", () => {
-        // Logic to save changes in factors
         otherFactors = [];
         const factorItems = document.querySelectorAll(".factor-item");
         factorItems.forEach(item => {
@@ -396,14 +456,15 @@
           }
         });
         alert("Factors saved!");
+        factorModal.style.display = "none";
       });
 
       document.getElementById("cancel-factors").addEventListener("click", () => {
-        otherFactorsDiv.innerHTML = "";
+        factorModal.style.display = "none";
       });
 
       // Handle Save and Clear Form Logic
-      saveButton.addEventListener("click", () => {
+      document.getElementById("save").addEventListener("click", () => {
         const formData = {
           name: nameInput.value,
           device_ids: device_ids,
@@ -423,7 +484,7 @@
           });
       });
 
-      clearButton.addEventListener("click", () => {
+      document.getElementById("clear").addEventListener("click", () => {
         nameInput.value = "";
         device_ids = [];
         activities = [];
@@ -433,7 +494,7 @@
         updateDevicePills();
         updateConditions();
         updateActivities();
-        otherFactorsDiv.innerHTML = "";
+        document.getElementById("other-factors").innerHTML = "";
       });
     });
   </script>
