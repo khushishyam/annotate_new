@@ -25,87 +25,66 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
+    .pill-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
     }
 
-    .modal-content {
-      background-color: white;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 300px;
-      text-align: center;
+    .pill {
+      padding: 8px 12px;
+      background-color: #e6f4ff;
       border-radius: 8px;
+      font-size: 14px;
+      color: #000;
+      display: flex;
+      align-items: center;
     }
 
-    .close {
+    .pill span {
+      cursor: pointer;
+      margin-left: 5px;
       color: red;
-      float: right;
-      font-size: 20px;
+    }
+
+    .button-group .btn {
+      flex: 1;
+    }
+
+    .tag {
+      padding: 8px 12px;
+      background-color: #e6f4ff;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    .btn {
+    .tag.active {
+      background-color: #00d9ff;
+      color: #fff;
+    }
+
+    .activity-group,
+    .other-factors {
+      max-height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
       padding: 10px;
-      margin-top: 10px;
-      background-color: blue;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .active {
+      background-color: #007aff;
       color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
     }
 
     .d-none {
       display: none;
     }
 
-    .pill {
-      background-color: lightgray;
-      padding: 5px;
-      margin-right: 5px;
-      display: inline-block;
-      border-radius: 10px;
-    }
-
-    .pill span {
-      cursor: pointer;
-    }
-
-    .pill-container {
-      margin-top: 10px;
-    }
-
-    .button-group button {
-      margin-right: 10px;
-    }
-
-    .activity-item,
-    .factor-item {
-      margin-bottom: 10px;
-    }
-
-    .factor-item select,
-    .factor-item input {
-      margin-right: 5px;
-    }
-
-    .btn-outline-primary {
-      background-color: lightblue;
-    }
-
-    .cross {
-      color: red;
-      cursor: pointer;
-      margin-left: 10px;
-      font-weight: bold;
+    .modal-body {
+      max-height: 400px;
+      overflow-y: auto;
     }
   </style>
 </head>
@@ -120,384 +99,433 @@
       <input type="text" id="device-id" class="form-control" placeholder="Device ID" />
     </div>
 
-    <!-- Timing Modal -->
-    <button class="btn btn-primary" id="timing-button">Timing</button>
-    <div class="modal" id="timing-modal">
-      <div class="modal-content">
-        <span class="close" id="close-timing-modal">&times;</span>
-        <h5>Timing</h5>
-        <div class="button-group d-flex">
-          <button class="btn btn-primary" id="now-button">NOW</button>
-          <button class="btn btn-outline-primary" id="custom-button">Custom</button>
-        </div>
-        <input type="datetime-local" id="custom-time" class="form-control mt-2 d-none" />
-        <div class="button-group d-flex mt-3">
-          <button class="btn btn-success" id="save-timing">SAVE CHANGES</button>
-          <button class="btn btn-danger" id="cancel-timing">CANCEL</button>
-        </div>
+    <div class="mb-3">
+      <h5>Timing</h5>
+      <div class="button-group d-flex">
+        <button class="btn btn-outline-primary" id="now-button">NOW</button>
+        <button class="btn btn-outline-primary" id="custom-button">Custom</button>
       </div>
+      <input type="datetime-local" id="custom-time" class="form-control mt-2 d-none" />
+      <button class="btn btn-success mt-2 d-none" id="custom-ok-button">OK</button>
+      <button class="btn btn-danger mt-2 d-none" id="custom-cancel-button">Cancel</button>
     </div>
 
-    <!-- Condition Modal -->
-    <button class="btn btn-primary" id="condition-button">Condition</button>
-    <div class="modal" id="condition-modal">
-      <div class="modal-content">
-        <span class="close" id="close-condition-modal">&times;</span>
-        <h5>Condition</h5>
-        <div class="button-group d-flex">
-          <button class="btn btn-outline-primary" id="add-condition">+ Add Condition</button>
-        </div>
-        <div class="container" id="condition-container"></div>
-        <div class="button-group d-flex mt-3">
-          <button class="btn btn-success" id="save-condition">SAVE CHANGES</button>
-          <button class="btn btn-danger" id="cancel-condition">CANCEL</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Activity Modal -->
-    <button class="btn btn-primary" id="activity-button">Activity</button>
-    <div class="modal" id="activity-modal">
-      <div class="modal-content">
-        <span class="close" id="close-activity-modal">&times;</span>
-        <h5>Activity</h5>
-        <div class="activity-group" id="activity-group">
-          <div class="activity-dropdown d-flex">
-            <select class="form-select activity-select me-2" id="activity-select">
-              <option>Select ONE</option>
-              <option>Smoking Cigarette</option>
-              <option>Running</option>
-              <option>Reading</option>
-              <option>Talking</option>
-            </select>
-            <button class="btn btn-success me-2" id="ok-activity">OK</button>
-            <button class="btn btn-danger" id="cancel-activity">CANCEL</button>
+    <div class="mb-3">
+      <h5>Annotate</h5>
+      <div class="border p-3 rounded" style="border: 1px solid #ccc;">
+        <h6>CONDITIONS</h6>
+        <div class="scrollable-div" id="condition-tags">
+          <div id="condition-container">
+            <h6>Conditions</h6>
           </div>
         </div>
-        <button class="btn btn-outline-primary mt-2" id="add-activity">+ Add Parallel Activity</button>
-        <div class="button-group d-flex mt-3">
-          <button class="btn btn-success" id="save-activity">SAVE CHANGES</button>
-          <button class="btn btn-danger" id="cancel-activity">CANCEL</button>
-        </div>
+        <button class="btn btn-primary mt-2" id="add-condition">+ Add Condition</button>
       </div>
     </div>
 
-    <!-- Other Factors Modal -->
-    <button class="btn btn-primary" id="factor-button">Other Factors</button>
-    <div class="modal" id="factor-modal">
-      <div class="modal-content">
-        <span class="close" id="close-factor-modal">&times;</span>
-        <h5>Other Factors</h5>
-        <div class="other-factors" id="other-factors"></div>
-        <button class="btn btn-outline-primary" id="add-factor">+ Add Factor</button>
-        <div class="button-group d-flex mt-3">
-          <button class="btn btn-success" id="save-factors">SAVE CHANGES</button>
-          <button class="btn btn-danger" id="cancel-factors">CANCEL</button>
-        </div>
+    <div class="mb-3">
+      <h5>Activity</h5>
+      <div class="activity-group" id="activity-group">
+        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#activityModal">+ Add Activity</button>
       </div>
+    </div>
+
+    <div class="mb-3">
+      <h5>Other Factors</h5>
+      <div class="other-factors" id="other-factors"></div>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFactorModal">+ Add Factor</button>
     </div>
 
     <button class="btn btn-success w-100 mb-2" id="save">SAVE</button>
     <button class="btn btn-danger w-100" id="clear">CLEAR FORM</button>
   </div>
 
+  <!-- Condition Modal -->
+  <div class="modal fade" id="conditionModal" tabindex="-1" aria-labelledby="conditionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="conditionModalLabel">Select Condition</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="existingConditions"></div>
+          <input type="text" id="newConditionInput" class="form-control mb-2" placeholder="Type new condition..." />
+          <button class="btn btn-success w-100" id="addNewCondition">✔ Add</button>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="okCondition">OK</button>
+          <button class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Modal -->
+  <div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="activityModalLabel">Select Activity</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="activityInput" class="form-control mb-2" placeholder="Type activity..." />
+          <button class="btn btn-success w-100" id="addActivityTemp">✔ Add</button>
+          <div id="tempActivityList" class="mt-3"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="okActivity">OK</button>
+          <button class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Factor Modal -->
+  <div class="modal fade" id="addFactorModal" tabindex="-1" aria-labelledby="addFactorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addFactorModalLabel">Add Factor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <button class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#selectFactorModal">Select Factor</button>
+          <input type="text" class="form-control mt-2" id="factorValue" placeholder="Value">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="confirmAddFactor">Add Factor</button>
+          <button class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Select Factor Modal -->
+  <div class="modal fade" id="selectFactorModal" tabindex="-1" aria-labelledby="selectFactorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="selectFactorModalLabel">Select Factor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <button class="btn btn-outline-primary w-100 factor-option" data-factor="Temperature">Temperature</button>
+          <button class="btn btn-outline-primary w-100 factor-option" data-factor="Humidity">Humidity</button>
+          <button class="btn btn-outline-primary w-100 factor-option" data-factor="Pressure">Pressure</button>
+          <button class="btn btn-outline-primary w-100 factor-option" data-factor="Light">Light</button>
+          <hr>
+          <h6>Add Custom Factor</h6>
+          <input type="text" id="customFactorInput" class="form-control mb-2" placeholder="Custom Factor" />
+          <button class="btn btn-success w-100" id="addCustomFactor">Add Custom Factor</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       let device_ids = [];
       let activities = [];
-      let conditions = [];
-      let otherFactors = [];
-      let timestamp = null;
+      let conditionArray = ["AC", "Fan", "Window"];
+      let activeConditions = new Set();
+      let timestamp = null;  // This will hold the selected timestamp
 
       const nameInput = document.getElementById("name");
       const deviceInput = document.getElementById("device-id");
       const deviceContainer = document.getElementById("device-pill-container");
+      const conditionTags = document.getElementById("condition-tags");
+      const addConditionButton = document.getElementById("add-condition");
+      const existingConditionsDiv = document.getElementById("existingConditions");
+      const newConditionInput = document.getElementById("newConditionInput");
+      const addNewConditionButton = document.getElementById("addNewCondition");
+      const okConditionButton = document.getElementById("okCondition");
+      const otherFactorsDiv = document.getElementById("other-factors");
+      const saveButton = document.getElementById("save");
+      const clearButton = document.getElementById("clear");
 
-      const timingModal = document.getElementById("timing-modal");
-      const conditionModal = document.getElementById("condition-modal");
-      const activityModal = document.getElementById("activity-modal");
-      const factorModal = document.getElementById("factor-modal");
-
+      // Elements for timestamp
       const nowButton = document.getElementById("now-button");
       const customButton = document.getElementById("custom-button");
       const customTimeInput = document.getElementById("custom-time");
 
-      // Handle device ID pill creation
-      deviceInput.addEventListener("keydown", (event) => {
-        if (event.key === " " || event.key === ",") {
-          event.preventDefault();
-          let newDeviceId = deviceInput.value.trim();
-          if (newDeviceId && !device_ids.includes(newDeviceId)) {
-            device_ids.push(newDeviceId);
-            updateDevicePills();
-          }
-          deviceInput.value = "";
-        }
-      });
+      // function updateDevicePills() {
+      //   deviceContainer.innerHTML = "";
+      //   device_ids.forEach((id, index) => {
+      //     const pill = document.createElement("div");
+      //     pill.classList.add("pill");
+      //     pill.innerHTML = `${id} <span data-index="${index}">&times;</span>`;
+      //     pill.querySelector("span").addEventListener("click", () => {
+      //       device_ids.splice(index, 1);
+      //       updateDevicePills();
+      //     });
+      //     deviceContainer.appendChild(pill);
+      //   });
+      // }
 
+      // deviceInput.addEventListener("keydown", (event) => {
+      //   if (event.key === " " || event.key === ",") {
+      //     event.preventDefault();
+      //     let newDeviceId = deviceInput.value.trim();
+      //     if (newDeviceId && !device_ids.includes(newDeviceId)) {
+      //       device_ids.push(newDeviceId);
+      //       updateDevicePills();
+      //     }
+      //     deviceInput.value = "";
+      //   }
+      // });
       function updateDevicePills() {
-        deviceContainer.innerHTML = "";
-        device_ids.forEach((id, index) => {
-          const pill = document.createElement("div");
-          pill.classList.add("pill");
-          pill.innerHTML = `${id} <span data-index="${index}">&times;</span>`;
-          pill.querySelector("span").addEventListener("click", () => {
-            device_ids.splice(index, 1);
-            updateDevicePills();
+  deviceContainer.innerHTML = "";
+  device_ids.forEach((id, index) => {
+    const pill = document.createElement("div");
+    pill.classList.add("pill");
+    pill.innerHTML = `${id} <span data-index="${index}">&times;</span>`;
+    pill.querySelector("span").addEventListener("click", () => {
+      device_ids.splice(index, 1);
+      updateDevicePills();
+    });
+    deviceContainer.appendChild(pill);
+  });
+}
+
+// Replace keydown event with input event
+deviceInput.addEventListener("input", () => {
+  // Check if there's a space or comma
+  if (deviceInput.value.includes(" ") || deviceInput.value.includes(",")) {
+    // Get the text before the first space/comma
+    const parts = deviceInput.value.split(/[\s,]+/);
+    const newDeviceId = parts[0].trim();
+
+    if (newDeviceId && !device_ids.includes(newDeviceId)) {
+      device_ids.push(newDeviceId);
+      updateDevicePills();
+    }
+
+    // Clear the input field
+    deviceInput.value = "";
+  }
+});
+
+
+      function updateConditions() {
+        const conditionContainer = document.getElementById("condition-container");
+        conditionContainer.innerHTML = ""; // Clear previous conditions
+        conditionArray.forEach((condition) => {
+          const conditionDiv = document.createElement("div");
+          conditionDiv.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-1");
+          conditionDiv.innerHTML = `
+            <span class="tag">${condition}</span>
+            <button class="btn btn-danger btn-sm remove-condition">X</button>
+          `;
+          conditionDiv.querySelector(".tag").style.backgroundColor = activeConditions.has(condition) ? "blue" : "grey";
+          conditionDiv.querySelector(".tag").style.color = "white";
+          conditionDiv.querySelector(".tag").addEventListener("click", () => {
+            if (activeConditions.has(condition)) {
+              activeConditions.delete(condition);
+              conditionDiv.querySelector(".tag").style.textDecoration = "line-through"; // Mark as deselected
+            } else {
+              activeConditions.add(condition);
+              conditionDiv.querySelector(".tag").style.textDecoration = "none"; // Mark as selected
+            }
           });
-          deviceContainer.appendChild(pill);
+          conditionDiv.querySelector(".remove-condition").addEventListener("click", () => {
+            activeConditions.delete(condition); // Remove from active conditions
+            conditionArray = conditionArray.filter(c => c !== condition); // Remove from condition array
+            updateConditions(); // Update UI
+          });
+          conditionContainer.appendChild(conditionDiv);
         });
       }
 
-      // Timing Modal Logic
-      document.getElementById("timing-button").addEventListener("click", () => {
-        timingModal.style.display = "block";
+      updateConditions();
+
+      addConditionButton.addEventListener("click", () => {
+        existingConditionsDiv.innerHTML = ""; // Clear previous conditions
+        conditionArray.forEach(condition => {
+          const conditionDiv = document.createElement("div");
+          conditionDiv.classList.add("form-check");
+          conditionDiv.innerHTML = `
+            <input class="form-check-input" type="radio" name="conditionRadio" id="${condition}" value="${condition}">
+            <label class="form-check-label" for="${condition}">${condition}</label>
+          `;
+          existingConditionsDiv.appendChild(conditionDiv);
+        });
+        newConditionInput.value = ""; // Clear input
+        const conditionModal = new bootstrap.Modal(document.getElementById('conditionModal'));
+        conditionModal.show();
       });
 
-      document.getElementById("close-timing-modal").addEventListener("click", () => {
-        timingModal.style.display = "none";
+      addNewConditionButton.addEventListener("click", () => {
+        const newCondition = newConditionInput.value.trim();
+        if (newCondition && !conditionArray.includes(newCondition)) {
+          conditionArray.push(newCondition);
+          const conditionDiv = document.createElement("div");
+          conditionDiv.classList.add("form-check");
+          conditionDiv.innerHTML = `
+            <input class="form-check-input" type="radio" name="conditionRadio" id="${newCondition}" value="${newCondition}">
+            <label class="form-check-label" for="${newCondition}">${newCondition}</label>
+          `;
+          existingConditionsDiv.appendChild(conditionDiv);
+          newConditionInput.value = ""; // Clear input
+        }
       });
 
+      okConditionButton.addEventListener("click", () => {
+        const selected = document.querySelector('input[name="conditionRadio"]:checked');
+        if (selected) {
+          activeConditions.add(selected.value);
+          updateConditions();
+        }
+        const conditionModal = bootstrap.Modal.getInstance(document.getElementById('conditionModal'));
+        conditionModal.hide();
+      });
+
+      // Add Factor Modal Logic
+      const factorValueInput = document.getElementById("factorValue");
+      const confirmAddFactorButton = document.getElementById("confirmAddFactor");
+
+      confirmAddFactorButton.addEventListener("click", () => {
+        const key = factorValueInput.dataset.selectedFactor;
+        const value = factorValueInput.value.trim();
+        if (key && value) {
+          const factorDiv = document.createElement("div");
+          factorDiv.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-2");
+          factorDiv.innerHTML = `
+            <span>${key}: ${value}</span>
+            <button class="btn btn-danger btn-sm remove-factor">X</button>
+          `;
+          factorDiv.querySelector(".remove-factor").addEventListener("click", () => {
+            otherFactorsDiv.removeChild(factorDiv);
+          });
+          otherFactorsDiv.appendChild(factorDiv);
+          factorValueInput.value = ""; // Reset input
+          const addFactorModal = bootstrap.Modal.getInstance(document.getElementById('addFactorModal'));
+          addFactorModal.hide(); // Close modal
+        }
+      });
+
+      // Select Factor Modal Logic
+      const factorOptions = document.querySelectorAll('.factor-option');
+      factorOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          const selectedFactor = option.getAttribute('data-factor');
+          factorValueInput.dataset.selectedFactor = selectedFactor; // Store selected factor
+          factorValueInput.value = selectedFactor; // Display selected factor in input
+          const selectFactorModal = bootstrap.Modal.getInstance(document.getElementById('selectFactorModal'));
+          selectFactorModal.hide(); // Close select factor modal
+        });
+      });
+
+      // Add Custom Factor Logic
+      const customFactorInput = document.getElementById("customFactorInput");
+      const addCustomFactorButton = document.getElementById("addCustomFactor");
+
+      addCustomFactorButton.addEventListener("click", () => {
+        const customFactor = customFactorInput.value.trim();
+        if (customFactor) {
+          factorValueInput.dataset.selectedFactor = customFactor; // Store custom factor
+          factorValueInput.value = customFactor; // Display custom factor in input
+          customFactorInput.value = ""; // Clear input
+          const selectFactorModal = bootstrap.Modal.getInstance(document.getElementById('selectFactorModal'));
+          selectFactorModal.hide(); // Close select factor modal
+        }
+      });
+
+      // Activity Modal Logic
+      const activityInput = document.getElementById("activityInput");
+      const addActivityTemp = document.getElementById("addActivityTemp");
+      const tempActivityList = document.getElementById("tempActivityList");
+      const okActivity = document.getElementById("okActivity");
+
+      addActivityTemp.addEventListener("click", () => {
+        const input = activityInput.value.trim();
+        if (input) {
+          const tempDiv = document.createElement("div");
+          tempDiv.classList.add("form-check", "d-flex", "justify-content-between", "align-items-center");
+          tempDiv.innerHTML = `
+            <span class="tag">${input}</span>
+            <button class="btn btn-danger btn-sm remove-activity">X</button>
+          `;
+          tempDiv.querySelector(".remove-activity").addEventListener("click", () => {
+            tempActivityList.removeChild(tempDiv);
+          });
+          tempActivityList.appendChild(tempDiv);
+          activityInput.value = ""; // Clear input
+        }
+      });
+
+      okActivity.addEventListener("click", () => {
+        const selectedActivities = [...tempActivityList.querySelectorAll('.tag')].map(tag => tag.innerText);
+        selectedActivities.forEach(activity => {
+          activities.push(activity);
+          const activityDiv = document.createElement("div");
+          activityDiv.classList.add("d-flex", "justify-content-between", "align-items-center");
+          activityDiv.innerHTML = `
+            <span>${activity}</span>
+            <button class="btn btn-danger btn-sm remove-activity">X</button>
+          `;
+          activityDiv.querySelector(".remove-activity").addEventListener("click", () => {
+            activities = activities.filter(a => a !== activity);
+            activityGroup.removeChild(activityDiv);
+          });
+          activityGroup.appendChild(activityDiv);
+        });
+        const activityModal = bootstrap.Modal.getInstance(document.getElementById('activityModal'));
+        activityModal.hide();
+      });
+
+      saveButton.addEventListener("click", () => {
+        const device = {
+          name: nameInput.value,
+          device_ids,
+          conditions: [...activeConditions],
+          factors: [...otherFactorsDiv.querySelectorAll("div")].map(div => {
+            const [key, value] = div.querySelector("span").innerText.split(": ");
+            return { key, value };
+          }),
+          activities,
+          timestamp
+        };
+
+        axios.post("http://localhost:5000/save", device)
+          .then(() => console.log("Data saved successfully"))
+          .catch(err => console.error("Error saving data:", err));
+      });
+
+      clearButton.addEventListener("click", () => {
+        nameInput.value = "";
+        device_ids = [];
+        activities = [];
+        deviceInput.value = "";
+        activityGroup.innerHTML = "";
+        activeConditions.clear();
+        otherFactorsDiv.innerHTML = "";
+        updateConditions();
+        updateDevicePills();
+      });
+
+      // Timestamp Logic
       nowButton.addEventListener("click", () => {
-        timestamp = new Date().toISOString();
-        customButton.classList.remove("active");
-        customButton.disabled = false;
-        nowButton.classList.add("active");
-        customTimeInput.classList.add("d-none");
+        timestamp = new Date().toISOString();  // Set timestamp to current time
+        nowButton.classList.add("active");  // Highlight NOW button
+        customButton.classList.remove("active");  // Unhighlight Custom button
+        customButton.disabled = false;  // Enable Custom button
+        customTimeInput.classList.add("d-none");  // Hide custom datetime picker
       });
 
       customButton.addEventListener("click", () => {
-        customButton.classList.add("active");
-        nowButton.classList.remove("active");
-        customTimeInput.classList.remove("d-none");
+        nowButton.classList.remove("active");  // Unhighlight NOW button
+        customButton.classList.add("active");  // Highlight Custom button
+        customTimeInput.classList.remove("d-none");  // Show custom datetime picker
       });
 
       customTimeInput.addEventListener("change", (event) => {
         timestamp = new Date(event.target.value).toISOString();
       });
-
-      document.getElementById("save-timing").addEventListener("click", () => {
-        timingModal.style.display = "none";
-      });
-
-      document.getElementById("cancel-timing").addEventListener("click", () => {
-        timingModal.style.display = "none";
-      });
-
-      // Condition Modal Logic
-      document.getElementById("condition-button").addEventListener("click", () => {
-        conditionModal.style.display = "block";
-      });
-
-      document.getElementById("close-condition-modal").addEventListener("click", () => {
-        conditionModal.style.display = "none";
-      });
-
-      document.getElementById("add-condition").addEventListener("click", () => {
-        const conditionDiv = document.createElement("div");
-        conditionDiv.classList.add("condition-item", "d-flex", "mb-2");
-        conditionDiv.innerHTML = `
-          <select class="form-select me-2">
-            <option>Select Condition</option>
-            <option>AC</option>
-            <option>FAN</option>
-            <option>WINDOW</option>
-          </select>
-          <span class="cross">×</span>
-        `;
-        document.getElementById("condition-container").appendChild(conditionDiv);
-
-        conditionDiv.querySelector(".cross").addEventListener("click", () => {
-          conditionDiv.remove();
-        });
-      });
-
-      document.getElementById("save-condition").addEventListener("click", () => {
-        const selectedConditions = [];
-        const conditionSelects = document.querySelectorAll(".condition-item select");
-        conditionSelects.forEach(select => {
-          if (select.value !== "Select Condition") {
-            selectedConditions.push(select.value);
-          }
-        });
-        conditions = selectedConditions;
-        updateConditions();
-        conditionModal.style.display = "none";
-      });
-
-      document.getElementById("cancel-condition").addEventListener("click", () => {
-        conditionModal.style.display = "none";
-      });
-
-      function updateConditions() {
-        const conditionContainer = document.getElementById("condition-container");
-        conditionContainer.innerHTML = "";
-        conditions.forEach(condition => {
-          const conditionDiv = document.createElement("div");
-          conditionDiv.classList.add("pill");
-          conditionDiv.textContent = condition;
-          conditionContainer.appendChild(conditionDiv);
-        });
-      }
-
-      // Activity Modal Logic
-      document.getElementById("activity-button").addEventListener("click", () => {
-        activityModal.style.display = "block";
-      });
-
-      document.getElementById("close-activity-modal").addEventListener("click", () => {
-        activityModal.style.display = "none";
-      });
-
-      document.getElementById("add-activity").addEventListener("click", () => {
-        const activityDiv = document.createElement("div");
-        activityDiv.classList.add("activity-item", "d-flex", "mb-2");
-
-        const select = document.createElement("select");
-        select.classList.add("form-select", "me-2");
-        select.innerHTML = `
-          <option>Select ONE</option>
-          <option>Smoking Cigarette</option>
-          <option>Running</option>
-          <option>Reading</option>
-          <option>Talking</option>
-        `;
-
-        const okButton = document.createElement("button");
-        okButton.classList.add("btn", "btn-success", "me-2");
-        okButton.innerHTML = "OK";
-
-        const cancelButton = document.createElement("button");
-        cancelButton.classList.add("btn", "btn-danger");
-        cancelButton.innerHTML = "CANCEL";
-
-        activityDiv.appendChild(select);
-        activityDiv.appendChild(okButton);
-        activityDiv.appendChild(cancelButton);
-        document.getElementById("activity-group").appendChild(activityDiv);
-
-        okButton.addEventListener("click", () => {
-          activities.push(select.value);
-          updateActivities();
-        });
-
-        cancelButton.addEventListener("click", () => {
-          activityDiv.remove();
-        });
-      });
-
-      document.getElementById("save-activity").addEventListener("click", () => {
-        activityModal.style.display = "none";
-      });
-
-      document.getElementById("cancel-activity").addEventListener("click", () => {
-        activityModal.style.display = "none";
-      });
-
-      function updateActivities() {
-        const activityContainer = document.getElementById("activity-group");
-        activityContainer.innerHTML = "";
-        activities.forEach(activity => {
-          const activityDiv = document.createElement("div");
-          activityDiv.classList.add("pill");
-          activityDiv.textContent = activity;
-          activityContainer.appendChild(activityDiv);
-        });
-      }
-
-      // Other Factors Modal Logic
-      document.getElementById("factor-button").addEventListener("click", () => {
-        factorModal.style.display = "block";
-      });
-
-      document.getElementById("close-factor-modal").addEventListener("click", () => {
-        factorModal.style.display = "none";
-      });
-
-      document.getElementById("add-factor").addEventListener("click", () => {
-        const factorDiv = document.createElement("div");
-        factorDiv.classList.add("factor-item", "d-flex", "mb-2");
-
-        const keySelect = document.createElement("select");
-        keySelect.classList.add("form-select", "me-2");
-        keySelect.innerHTML = `
-          <option>Choose Key</option>
-          <option>Blood Pressure</option>
-          <option>Heart Rate</option>
-          <option>Temperature</option>
-        `;
-
-        const valueInput = document.createElement("input");
-        valueInput.classList.add("form-control", "me-2");
-        valueInput.placeholder = "Enter Value";
-
-        const crossIcon = document.createElement("span");
-        crossIcon.classList.add("cross");
-        crossIcon.innerHTML = "×";
-
-        factorDiv.appendChild(keySelect);
-        factorDiv.appendChild(valueInput);
-        factorDiv.appendChild(crossIcon);
-        document.getElementById("other-factors").appendChild(factorDiv);
-
-        crossIcon.addEventListener("click", () => {
-          factorDiv.remove();
-        });
-      });
-
-      document.getElementById("save-factors").addEventListener("click", () => {
-        otherFactors = [];
-        const factorItems = document.querySelectorAll(".factor-item");
-        factorItems.forEach(item => {
-          const key = item.querySelector("select").value;
-          const value = item.querySelector("input").value;
-          if (key && value) {
-            otherFactors.push({ key, value });
-          }
-        });
-        alert("Factors saved!");
-        factorModal.style.display = "none";
-      });
-
-      document.getElementById("cancel-factors").addEventListener("click", () => {
-        factorModal.style.display = "none";
-      });
-
-      // Handle Save and Clear Form Logic
-      document.getElementById("save").addEventListener("click", () => {
-        const formData = {
-          name: nameInput.value,
-          device_ids: device_ids,
-          timestamp: timestamp,
-          conditions: conditions,
-          activities: activities,
-          other_factors: otherFactors
-        };
-
-        // Example of sending data to the server
-        axios.post("your-database-api-endpoint", formData)
-          .then(response => {
-            alert("Data saved successfully!");
-          })
-          .catch(error => {
-            alert("Error saving data!");
-          });
-      });
-
-      document.getElementById("clear").addEventListener("click", () => {
-        nameInput.value = "";
-        device_ids = [];
-        activities = [];
-        conditions = [];
-        otherFactors = [];
-        timestamp = null;
-        updateDevicePills();
-        updateConditions();
-        updateActivities();
-        document.getElementById("other-factors").innerHTML = "";
-      });
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
